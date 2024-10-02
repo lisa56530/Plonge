@@ -22,6 +22,7 @@ class Essuyeur extends Thread {
 				break; // Sort du while, termine le Thread;
 			}
 		}
-		//System.out.println("Essuyeur terminé");
+		System.out.println("Essuyeur terminé");
 	}
 }
+

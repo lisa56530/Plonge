@@ -5,7 +5,7 @@ import java.util.List;
 
 class PileDAssiettes {
 
-	private final static int MAX = 10;
+	private final static int MAX = 5;
 	private final List<Assiette> myList = new LinkedList<>();
 
 	private boolean isEmpty() {
@@ -16,9 +16,14 @@ class PileDAssiettes {
 		return (myList.size() >= MAX);
 	}
 
-	public void push(Assiette assiette) throws InterruptedException {
+	synchronized public void push(Assiette assiette) throws InterruptedException {
+		while (isFull()) {
+			wait();
+		}
+		assert !isFull();
 		myList.add(assiette);
 		System.out.printf("la pile contient %d assiettes%n", myList.size());
+		notifyAll();
 	}
 
 	synchronized public Assiette pop() throws InterruptedException {
@@ -26,7 +31,7 @@ class PileDAssiettes {
 		while (isEmpty()) {
 			wait();
 		}
-		//assert !isEmpty(); // On est sur que la pile n'est pas vide
+		assert !isEmpty(); // On est sur que la pile n'est pas vide
 		Assiette result = myList.remove(myList.size() - 1);
 		System.out.printf("la pile contient %d assiettes%n", myList.size());
 		notifyAll(); // Notifier que la pile n'est plus pleine
